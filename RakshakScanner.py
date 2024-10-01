@@ -1,15 +1,13 @@
-
-
 import sys
 import os
 import yara
 
 from datetime import datetime
 
-# Class will instantiate a YaraScanner object with a rule path and malicious file path as attributes
-class YaraScanner:
+# Class will instantiate a RakshakScanner object with a rule path and malicious file path as attributes
+class RakshakScanner:
 
-    # Constructor for YaraScanner object
+    # Constructor for RakshakScanner object
     def __init__(self, rule_path, mal_path):
         self.rule_path = rule_path
         self.mal_path = mal_path
@@ -20,7 +18,7 @@ class YaraScanner:
         self.log = "logs/" + output_filename
         return
 
-    # To string method for printing info of YaraScanner object
+    # To string method for printing info of RakshakScanner object
     # Input: - None
     # Returns - None
     def __str__(self):
@@ -45,26 +43,24 @@ class YaraScanner:
     # Input: string - string result to write to log
     # Returns: None (results written to the log file)
     def write_log(self, string):
-        output_file = open(self.log, "a+")
-        output_file.write(string)
-        output_file.close()
+        with open(self.log, "a+") as output_file:
+            output_file.write(string)
         return
 
     # Function will take the file to scan, along with our compiled rules, and check for matching criteria
     # Input: file - file to scan
-    #        rules - compiled Yara rules
+    #        rules - compiled Rakshak rules
     # Returns: file - file if hit, none if not hit
-    def yara_sig_check(self, file, rules):
+    def rakshak_sig_check(self, file, rules):
         try:
-            ### Need something for accessing files with restrictions on access ###
             # Will scan the file for 60 seconds, any longer it will move on to the next file
             matches = rules.match(file, 60)
-            if (len(matches) > 0):
+            if len(matches) > 0:
                 # Grab proper filename not directory
                 filename = os.path.splitext(os.path.basename(file))[0]
                 matches = list(matches.values())
                 rule = matches[0][0].get('rule')
-                # Going to implement logging functionality
+                # Logging functionality
                 string = "File was hit: " + filename + " with rule: " + str(rule) + "\n"
                 self.write_log(string)
                 return file
@@ -73,19 +69,19 @@ class YaraScanner:
 
     # Function will scan files within the directory given a dictionary of rule files
     # Input: rule_dict - dictionary of rule files
-    # Returns: hit_files - all files hit by Yara rules
+    # Returns: hit_files - all files hit by Rakshak rules
     def scan_files(self, rule_dict):
         hit_files = []
-        # Compile Yara rules before starting scan
-        rules = yara.compile(filepaths = rule_dict)
+        # Compile Rakshak rules before starting scan
+        rules = yara.compile(filepaths=rule_dict)
         for filename in os.listdir(self.mal_path):
             print("Scanning file: " + filename)
-            # Call function to check file with Yara signatures
+            # Call function to check file with Rakshak signatures
             file_path = os.path.realpath(os.path.join(self.mal_path, filename))
             print(file_path)
-            scanned_file = self.yara_sig_check(file_path, rules)
+            scanned_file = self.rakshak_sig_check(file_path, rules)
             # Don't add the file to the list if it wasn't flagged/was already added
-            if(scanned_file != None and hit_files.__contains__(scanned_file) == False):
+            if scanned_file and scanned_file not in hit_files:
                 scanned_file = os.path.splitext(os.path.basename(scanned_file))[0]
                 hit_files.append(scanned_file)
         return hit_files
