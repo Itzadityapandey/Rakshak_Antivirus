@@ -1,10 +1,4 @@
-# This is our code!
-# This module will represent a YaraScanner object with its respective pieces of functionality (scanning, compiling rules etc.)
-# Date: 11/21/19
-# Version 1.0
-# Authors:
-    # Patrick Sacchet
-    # Javon Kitson
+
 
 import sys
 import os
