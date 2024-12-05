@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antivirus Scanner</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Antivirus Scanner</h1>
+        <form method="POST">
+            <label for="directory">Enter Directory to Scan:</label>
+            <input type="text" id="directory" name="directory" placeholder="e.g., C:/Users/Documents" required>
+            <button type="submit" class="button">Start Scan</button>
+        </form>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

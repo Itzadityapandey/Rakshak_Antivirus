@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Results</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Scan Results</h1>
+        {% if infected_files %}
+        <p class="info">Infected files found:</p>
+        <ul class="file-list">
+            {% for file in infected_files %}
+            <li>{{ file }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="success">No malware detected!</p>
+        {% endif %}
+        <a href="/" class="button">Scan Again</a>
+    </div>
+</body>
+</html>
